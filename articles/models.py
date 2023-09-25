@@ -8,4 +8,4 @@ class Article(models.Model):
     updated_at = models.DateTimeField(auto_now=True) # 수정될 때 자동으로 넣어줌
 
     def __str__(self):
-        return f'{self.id}번 글 - {self.title} : {self.content}'
+        return f'제목 : {self.title} 내용 : {self.content}'
