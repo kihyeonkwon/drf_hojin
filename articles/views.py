@@ -12,9 +12,17 @@ class ArticleView(APIView):
         return Response(serializer.data)
     
     def post(self, request):
+        print('post요청')
         print(request.data)
+        print(request.user)
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user = request.user)
             return Response(serializer.data)
         
+
+class ArticleDetailView(APIView):
+    def get(self, request, article_pk):
+        article = Article.objects.get(pk=article_pk)
+        serializer = ArticleSerializer(article)
+        return Response(serializer.data)
