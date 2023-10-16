@@ -19,6 +19,8 @@ class ArticleView(APIView):
         if serializer.is_valid():
             serializer.save(user = request.user)
             return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=400)
         
 
 class ArticleDetailView(APIView):
