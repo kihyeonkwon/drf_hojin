@@ -50,7 +50,7 @@ class MyUser(AbstractBaseUser):
     objects = MyUserManager()
 
     def __str__(self):
-        return self.email
+        return self.email + "유저입니다"
     
 
     def has_perm(self, perm, obj=None):
