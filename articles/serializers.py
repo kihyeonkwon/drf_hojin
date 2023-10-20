@@ -9,7 +9,7 @@ from .models import Article, Comment
 class SimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ['email', 'name']
+        fields = ['email', 'name', 'id']
 
 
 
@@ -30,13 +30,13 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ArticleSerializer(serializers.ModelSerializer):
-    # user = serializers.SerializerMethodField(read_only=True)
+    user = SimpleUserSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     
     
     class Meta:
         model = Article
-        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'image','comments' ]
+        fields = ['id', 'title', 'content', 'created_at', 'updated_at', 'image','comments', 'user' ]
 
 
 
