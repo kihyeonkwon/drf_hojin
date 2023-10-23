@@ -37,3 +37,49 @@ class UserView(APIView):
             print(serializer.errors)
             return Response(serializer.errors, status=400)
 
+
+class UserDetailView(APIView):
+    def get(self, request, user_id):
+        user = MyUser.objects.get(id=user_id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+
+
+class FollowView(APIView):
+    def get(self, request, user_id):
+        user = MyUser.objects.get(id=user_id)
+        # 유저의 팔로워들
+        follower_serializer = UserSerializer(user.followers, many=True)
+        # 유저가 팔로잉하고 있는 사람들
+        following_serializer = UserSerializer(user.following, many=True)
+        data = {
+            'followers': follower_serializer.data,
+            'following': following_serializer.data,
+        }
+        return Response(data)
+    
+    def post(self, request, user_id):
+        if request.user.is_anonymous:
+            return Response({'message': '로그인이 필요합니다.'}, status=401)
+        me = request.user
+        you = MyUser.objects.get(id=user_id)
+
+        if you.followers.filter(id=me.id).exists():
+            me.following.remove(you)
+            me.save()
+            return Response({'message': '언팔로우 완료!'})
+        else:
+            me.following.add(you)
+            me.save()
+            return Response({'message': '팔로우 완료!'})
+    
+    def delete(self, request, user_id):
+        if request.user.is_anonymous:
+            return Response({'message': '로그인이 필요합니다.'}, status=401)
+        me = request.user
+        you = MyUser.objects.get(id=user_id)
+        me.following.remove(you)
+        me.save()
+
+        return Response({'message': '언팔로우 완료!'})

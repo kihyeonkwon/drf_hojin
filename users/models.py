@@ -26,6 +26,7 @@ class MyUserManager(BaseUserManager):
             email,
             password=password,
             is_admin=True,
+            is_staff=True,
         )
         # user.save(using=self._db)
         return user
@@ -41,7 +42,10 @@ class MyUser(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    following = models.ManyToManyField('self', symmetrical=False, related_name='followers', blank=True)
 
+    # user.following -> 내가 팔로우하고 있는 유저들을 갖고옴
+    # user.followers -> 나를 팔로우하고 있는 유저들을 갖고옴
 
     USERNAME_FIELD = 'email'
 
@@ -65,7 +69,13 @@ class MyUser(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
+        # "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+    
+    @is_staff.setter
+    def is_staff(self, value):
+        self.is_admin = value
+    
+
 
